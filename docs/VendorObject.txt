@@ -1,0 +1,24 @@
+return {
+	["Items"] = {
+		["GiftOfLove"] = {
+			Price = 5,
+			Permissions = "All",
+			ItemToRecieve = "lol",
+			StoreName = "LOL",
+			StoreDescription = "A random item found from the programming office."
+		}
+	},
+	["VendorName"] = "BOXER",
+	["Permissions"] = "All",
+	["Rank"] = "Cheapest Vendor",
+	["Messages"] = {
+		[1] = "whad upppp",
+		[2] = "how about you make yourself more useful",
+		[3] = "ughhhhhhhhh go rank up newbie",
+		[4] = "yayayayaya i dont have them here, i told you enough"
+	},
+	["VendorMusic"] = {
+		["SoundId"] = "rbxassetid://1845341094",
+		["Volume"] = 0.5
+	},
+}
