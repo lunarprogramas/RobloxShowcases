@@ -4,7 +4,7 @@ local public = {}
 -- made by @lunarprogramas (janslan)
 
 function public:Init()
-	local UI = Players.LocalPlayer.PlayerGui:WaitForChild("important")
+	local UI = Players.LocalPlayer.PlayerGui:WaitForChild("important", 5)
 	if not UI then
 		return
 	end

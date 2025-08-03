@@ -14,8 +14,10 @@ local Player = Players.LocalPlayer
 
 local TeamIcons = {
 	["Developer"] = "rbxassetid://17399844238",
-	["Administrator"] = "rbxassetid://17401665157"
+	["Administrator"] = "rbxassetid://17401665157",
 }
+
+local LeaderboardPermissions = { "Owner", "Team:Developer" }
 
 local PlayerIcons = {
 	-- ["Developer"] = {
@@ -23,6 +25,8 @@ local PlayerIcons = {
 	-- 	Icon = "rbxassetid://17399844238"
 	-- }
 }
+
+-- made by @lunarprogramas (janslan)
 
 local HiddenPermissions = {
 	"Owner",
@@ -84,6 +88,25 @@ local function viewPlayer(plr: Player, button: TextButton)
 end
 
 local function updateLeaderboard()
+	if not HasPermission(Player, LeaderboardPermissions) then
+		if UI then
+			UI:Destroy()
+			UI = nil
+		end
+
+		return
+	end
+
+	if not UI then
+		UI = ReplicatedStorage:FindFirstChild("Leaderboard"):Clone()
+		UI.Parent = Player.PlayerGui
+		UI.Enabled = true
+		UI = UI.ScrollingFrame
+		if not UI then
+			return warn("Unable to initialise leaderboard due to the asset not found!")
+		end
+	end
+
 	local maxPlayers = #Players:GetPlayers()
 
 	-- clear current values
@@ -203,27 +226,21 @@ local function updateLeaderboard()
 end
 
 function Controller:SetLeaderboard()
+	if not HasPermission(Player, LeaderboardPermissions) then
+		return
+	end
+
 	leaderboardState = not leaderboardState
 	UI.Parent.Enabled = leaderboardState
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, not leaderboardState)
 end
 
 function Controller:Init()
-	if not UI then
-		UI = ReplicatedStorage:FindFirstChild("Leaderboard"):Clone()
-		UI.Parent = Player.PlayerGui
-		UI.Enabled = true
-		UI = UI.ScrollingFrame
-		if not UI then
-			return warn("Unable to initialise leaderboard due to the asset not found!")
-		end
-	end
-
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
 
 	UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 		if not gameProcessedEvent then
-			if input.KeyCode == Enum.KeyCode.Tab and leaderboardState then
+			if input.KeyCode == Enum.KeyCode.Tab and leaderboardState and UI then
 				UI.Parent.Enabled = not UI.Parent.Enabled
 			end
 		end
@@ -233,14 +250,18 @@ end
 function Controller:Start()
 	Players.PlayerAdded:Connect(function(player)
 		updateLeaderboard()
-		connections[("teamchange_%s"):format(player.UserId)] = player:GetPropertyChangedSignal("Team"):Connect(function()
-			updateLeaderboard()
-		end)
+		connections[("teamchange_%s"):format(player.UserId)] = player
+			:GetPropertyChangedSignal("Team")
+			:Connect(function()
+				updateLeaderboard()
+			end)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
 		updateLeaderboard()
-		connections[("teamchange_%s"):format(player.UserId)]:Disconnect()
-		connections[("teamchange_%s"):format(player.UserId)] = nil
+		if connections[("teamchange_%s"):format(player.UserId)] then
+			connections[("teamchange_%s"):format(player.UserId)]:Disconnect()
+			connections[("teamchange_%s"):format(player.UserId)] = nil
+		end
 	end)
 
 	Player:GetPropertyChangedSignal("Team"):Connect(updateLeaderboard)

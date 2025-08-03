@@ -10,6 +10,8 @@ local Vendor = import("Modules/Vendor")
 local Network = import("Shared/Network")
 local VendorFunction: RemoteFunction = Network.GetRemoteFunction("RF_Vendor")
 
+-- made by @lunarprogramas (janslan)
+
 export type VendorInstance = {
     VendorModel: Model,
     Name: string,
@@ -17,10 +19,15 @@ export type VendorInstance = {
         [string]: {
             Price: number,
             Permissions: string | table,
-            ItemToRecieve: string
+            ItemToRecieve: string,
+            StoreName: string,
+			StoreDescription: string,
         }
     },
     Permissions: string | table,
+    Messages: {
+        [number]: string
+    }
 }
 
 function VendorController:GetVendorByName(name: string)
@@ -34,8 +41,7 @@ end
 function VendorController:Init()
     local vendorInstances = VendorFunction:InvokeServer("GetVendors")
     if #vendorInstances > 0 then
-        for index, vendor: VendorInstance in vendorInstances do
-            warn(vendor)
+        for _, vendor: VendorInstance in vendorInstances do
             local success, vendorModule = pcall(Vendor.new, vendor.VendorModel, vendor)
             if not success then
                 warn(("[ VendorController ] Failed to load vendor: %s due to: %s"):format(vendor.Name, vendorModule))
