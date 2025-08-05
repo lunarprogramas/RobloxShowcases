@@ -8,9 +8,10 @@ local Modules = script.Scripts.Modules
 local import = require(ReplicatedStorage.Shared.import)
 
 local function start()
-	import("set:Controllers", Controllers:GetChildren(), false)
-	import("set:Modules", Modules:GetChildren(), false)
-	import("set:Shared", ReplicatedStorage.Shared.Scripts:GetChildren(), true)
+	import("set:Controllers", Controllers:GetChildren())
+	import("set:Modules", Modules:GetChildren())
+	import("set:Shared", ReplicatedStorage.Shared.Scripts:GetChildren())
+	import("set:Packages", ReplicatedStorage.Packages:GetChildren())
 
 	warn("initializing Controllers")
 

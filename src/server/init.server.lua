@@ -8,9 +8,10 @@ local con
 -- made by @lunarprogramas (janslan)
 
 local function start()
-    import("set:Services", Services:GetChildren(), false)
-    import("set:Modules", Modules:GetChildren(), false)
-    import("set:Shared", ReplicatedStorage.Shared.Scripts:GetChildren(), true)
+    import("set:Services", Services:GetChildren())
+    import("set:Modules", Modules:GetChildren())
+    import("set:Shared", ReplicatedStorage.Shared.Scripts:GetChildren())
+    import("set:Packages", ReplicatedStorage.Packages:GetChildren())
 
     warn("initializing services")
 
